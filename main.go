@@ -13,6 +13,7 @@ func handlerFunc(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprint(w, "To get in touch please send an email to <a href=\"support"+
 			"@karimelnaggar.lenslocked.com\">support@karimelnaggar.lenslocked.com</a>.")
 	} else {
+		w.WriteHeader(http.StatusNotFound)
 		fmt.Fprint(w, "Not found!")
 	}
 }
