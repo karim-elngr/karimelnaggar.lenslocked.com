@@ -2,23 +2,19 @@ package main
 
 import (
 	"fmt"
-	"github.com/gorilla/mux"
+	"html/template"
 	"net/http"
+
+	"github.com/gorilla/mux"
 )
+
+var homeTemplate *template.Template
 
 func home(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
-	fmt.Fprint(w, "<H1>Welcome to my awesome site!</H1>")
-}
-
-func faq(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "text/html")
-	fmt.Fprintln(w, "<H1>FAQ</H1>")
-	fmt.Fprintln(w,
-		"<ul><li>How to learn web dev with golang? <em>Watch calhoun."+
-			"io courses"+
-			"</em></li></ul>")
-
+	if err := homeTemplate.Execute(w, nil); err != nil {
+		panic(err)
+	}
 }
 
 func contact(w http.ResponseWriter, r *http.Request) {
@@ -29,17 +25,14 @@ func contact(w http.ResponseWriter, r *http.Request) {
 		"com</a>.</p>")
 }
 
-func notFound(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "text/html")
-	w.WriteHeader(http.StatusNotFound)
-	fmt.Fprint(w, "<p>Page is not found</p>")
-}
-
 func main() {
+	var err error
+	homeTemplate, err = template.ParseFiles("views/home.gohtml")
+	if err != nil {
+		panic(err)
+	}
 	r := mux.NewRouter()
 	r.HandleFunc("/", home)
-	r.HandleFunc("/faq", faq)
 	r.HandleFunc("/contact", contact)
-	r.NotFoundHandler = http.HandlerFunc(notFound)
 	http.ListenAndServe(":3000", r)
 }
