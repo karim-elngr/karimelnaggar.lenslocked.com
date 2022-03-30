@@ -1,0 +1,23 @@
+<h1>Hello, {{.Name}},
+    your age is {{.Age}},
+    and you are a {{ if .IsMale}}male{{ else }}female{{ end }}!</h1>
+{{ if .Friends -}}
+    <h2>Your friends are:</h2>
+    <ul>
+        {{ range .Friends }}
+            <li>{{.}}</li>
+        {{ end }}
+    </ul>
+{{ else -}}
+    <h2>You don't have any friends yet!</h2>
+{{ end -}}
+{{ if .Games -}}
+    <h2>You play the following games:</h2>
+    <ul>
+        {{ range $key, $value := .Games }}
+            <li><strong>{{ $key }}</strong>: {{ $value }}</li>
+        {{ end }}
+    </ul>
+{{ else -}}
+    <h2>You don't play any games!</h2>
+{{ end -}}
